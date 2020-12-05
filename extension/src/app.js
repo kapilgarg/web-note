@@ -15,8 +15,8 @@ function getSelected() {
     }
 }
 
-
 $(document).ready(function () {
+    console.debug('loading...');
     var btnSave = null;
     $('body').mouseup(function(e){
         var selection = $.trim(getSelected());
