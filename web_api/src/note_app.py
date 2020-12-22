@@ -24,17 +24,10 @@ def notes():
     """
     if request.method == 'POST':
         data = request.data.decode('UTF-8')
-        print("******************************************"+data)
         data = json.loads(data)
         if data:
-            db.save(data)
-        response = flask.Response('success')
-        response.headers['Access-Control-Allow-Origin'] = '*'
-        response.headers['Access-Control-Allow-Credentials'] = True
-        response.headers['Access-Control-Allow-Methods']= "GET,POST,OPTIONS"
-        response.headers['Access-Control-Allow-Headers']= "Origin, Content-Type, Accept"
-        response.headers['Access-Control-Allow-Headers']= "Origin, Content-Type, Accept"
-        return response 
+            db.save(data)        
+        return {'status':'success'}
 
     if request.method == 'GET':
         return {
@@ -44,10 +37,12 @@ def notes():
     raise Exception('unsupported method - request.method')
 
 
-@app.route('/note/<note_id>')
+@app.route('/note/<note_id>', methods=['GET'])
 def get(note_id):
     """
-    returns a note by id
+    handler for /note/<note_id>
+    returns a note by note id
+    if note is not presnt, raise 404
     """
     note = db.get(note_id)
     if not note:
@@ -57,10 +52,27 @@ def get(note_id):
 
 @app.errorhandler(404)
 def page_not_found(error):
+    """
+    handler for 404
+    """
     return "request resource is not available", 404
+
+@app.after_request
+def add_header(response):
+    """
+        adds additional headers in the response
+    """
+    response.headers['Access-Control-Allow-Origin'] = '*'
+    response.headers['Access-Control-Allow-Credentials'] = True
+    response.headers['Access-Control-Allow-Methods'] = "GET,POST,OPTIONS"
+    response.headers['Access-Control-Allow-Headers'] = "Origin, Content-Type, Accept"
+    return response
 
 
 def get_all(limit=20, offset=0):
+    """
+    returns all the notes by offset and limit
+    """
     return db.get_all(limit, offset)
 
 
