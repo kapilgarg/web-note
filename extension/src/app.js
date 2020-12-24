@@ -13,6 +13,62 @@ function getSelected() {
         }
         return false;
     }
-    return false;
 }
+
+$(document).ready(function () {
+    console.debug('loading...');
+    
+    var btnSave = null;
+    $('body').mouseup(function(e){
+        var selection = $.trim(getSelected());
+        if(!btnSave && selection!=''){
+            btnSave = $('<button>')
+            .attr({
+                type : 'button',
+                id : 'btnsave'
+            })
+            .html('+')
+            .css({
+                'color' : 'red'
+            }).hide();
+            $(document.body).append(btnSave);
+
+            $('#btnsave').click(function  save(event) {
+                event.preventDefault();
+                var txt = $.trim(getSelected());
+                
+                var request = new XMLHttpRequest();
+                request.open("POST", "http://127.0.0.1:5000/notes");
+                request.setRequestHeader("Content-Type", "text/plain");
+                request.overrideMimeType("text/plain");
+                request.onload = function()
+                {
+                    console.log("Response received: " + request.responseText);
+                };
+                try{
+                    request.send(JSON.stringify({"user_id":"1","text":txt,"source":window.location.href}));
+                }
+                catch(err){
+                    console.log(err);
+                }
+                document.getElementById("btnsave").style.display="none";
+            });
+        }
+
+      
+
+        if(selection !=''){
+            btnSave.css({
+                top : e.pageY-0,
+                left : e.pageX -3,
+                position:'absolute'
+            })
+            .fadeIn();
+        }
+        else{
+            document.getElementById("btnsave").style.display="none";
+        }
+    });
+    
+});
 

@@ -1,0 +1,22 @@
+{
+    "manifest_version": 2,
+    "name": "web-note",
+    "version": "1.0",
+  
+    "description": "saves your highlites",
+  
+    
+    "permissions": [
+      "http://*/*",
+      "https://*/*" ,
+      "webRequest"
+  ],
+  
+    "content_scripts": [
+      {
+        "matches": ["<all_urls>"],
+        "js": ["jquery-3.1.1.js","app.js"]
+      }
+    ]
+  
+  }
