@@ -3,7 +3,9 @@
 import json
 import flask
 from flask import request
-import db
+from models import Note
+from database import db_session
+
 
 app = flask.Flask(__name__)
 app.config["DEBUG"] = True
@@ -26,15 +28,23 @@ def notes():
         data = request.data.decode('UTF-8')
         data = json.loads(data)
         if data:
-            db.save(data)        
-        return {'status':'success'}
+            _save_note(data)
+        return {'status': 'success'}
 
     if request.method == 'GET':
+        all_notes = [note.serialize() for note in  Note.query.all()]
         return {
             'status': 'success',
-            'data': db.get_all(limit=20, offset=0)
+            'data': all_notes
         }
     raise Exception('unsupported method - request.method')
+
+def _save_note(data):
+    note = Note(user_id=data.get('user_id'), text=data.get(
+                'text'), source=data.get('source'))
+    db_session.add(note)
+    db_session.commit()
+
 
 
 @app.route('/note/<note_id>', methods=['GET'])
@@ -44,10 +54,10 @@ def get(note_id):
     returns a note by note id
     if note is not presnt, raise 404
     """
-    note = db.get(note_id)
+    note = Note.query.filter(Note.id == note_id).first()
     if not note:
         flask.abort(404)
-    return dict(status='success', data=note)
+    return dict(status='success', data=note.serialize())
 
 
 @app.errorhandler(404)
@@ -56,6 +66,7 @@ def page_not_found(error):
     handler for 404
     """
     return "request resource is not available", 404
+
 
 @app.after_request
 def add_header(response):
@@ -67,13 +78,5 @@ def add_header(response):
     response.headers['Access-Control-Allow-Methods'] = "GET,POST,OPTIONS"
     response.headers['Access-Control-Allow-Headers'] = "Origin, Content-Type, Accept"
     return response
-
-
-def get_all(limit=20, offset=0):
-    """
-    returns all the notes by offset and limit
-    """
-    return db.get_all(limit, offset)
-
 
 app.run(host='0.0.0.0')
