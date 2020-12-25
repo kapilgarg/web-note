@@ -15,7 +15,7 @@
     "content_scripts": [
       {
         "matches": ["<all_urls>"],
-        "js": ["jquery-3.1.1.js","app.js","config.js"]
+        "js": ["jquery-3.5.1.min.js","app.js","config.js"]
       }
     ]
   
