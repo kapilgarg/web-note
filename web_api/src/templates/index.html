@@ -1,0 +1,12 @@
+{% extends "base.html" %}
+{% block content %}
+<div>
+    {% for note in notes %}
+
+    <p style="border-bottom:1px;border-left: 0pc;border-right: 0pc;border-top: 0pc; border-style:solid; border-color:#FF0000; padding: 0.4em; ">
+        {{note.text}}
+    </p>
+    
+    {% endfor %}
+</div>
+{% endblock %}
