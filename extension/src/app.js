@@ -38,7 +38,7 @@ $(document).ready(function () {
                 var txt = $.trim(getSelected());
                 
                 var request = new XMLHttpRequest();
-                request.open("POST", "http://127.0.0.1:5000/notes");
+                request.open("POST", URL+"notes");
                 request.setRequestHeader("Content-Type", "text/plain");
                 request.overrideMimeType("text/plain");
                 request.onload = function()

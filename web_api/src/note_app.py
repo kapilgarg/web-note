@@ -2,7 +2,7 @@
 """
 import json
 import flask
-from flask import request
+from flask import request, render_template
 from models import Note
 from database import db_session
 
@@ -16,28 +16,20 @@ def home():
     """
     Home
     """
-    return "<h1>Distant Reading Archive</h1><p>This site is a prototype API for distant reading of science fiction novels.</p>"
+    all_notes = [note.serialize() for note in  Note.query.all()]
+    return render_template('index.html', notes=all_notes) 
 
 
-@app.route('/notes', methods=['GET', 'POST'])
+@app.route('/notes', methods=['POST'])
 def notes():
     """
     handler for /notes
     """
-    if request.method == 'POST':
-        data = request.data.decode('UTF-8')
-        data = json.loads(data)
-        if data:
-            _save_note(data)
-        return {'status': 'success'}
-
-    if request.method == 'GET':
-        all_notes = [note.serialize() for note in  Note.query.all()]
-        return {
-            'status': 'success',
-            'data': all_notes
-        }
-    raise Exception('unsupported method - request.method')
+    data = request.data.decode('UTF-8')
+    data = json.loads(data)
+    if data:
+        _save_note(data)
+    return {'status': 'success'}               
 
 def _save_note(data):
     note = Note(user_id=data.get('user_id'), text=data.get(
