@@ -10,3 +10,34 @@ Once you highlight a text on a web page, it shows a button at the end of the tex
 You can read all the saved notes/highlights from the browser  
 
 <img src="/images/hl2.JPG" width="100%">
+
+## Web api Installation (windows)
+
+\>git clone https://github.com/kapilgarg/web-note.git  
+\>cd web-note\web_api\src  
+\>python -m venv venv  
+\>Scripts\activate  
+\>pip install -requirements.txt  
+\>python -c "from database import init_db; init_db()"  
+\>python note_app.py 
+
+## Extension
+### Firefox
+1. open firefox and go to about:debugging
+2. click on **This Firefox** in the left panel
+3. click on **Load Temporary Add-on...**
+4. navigate to extension\src directory
+5. select any file and click Open
+
+### Google Chrome
+1. open google chrome and go to chrome://extensions/
+2. make sure **Developer mode** is on
+3. click on **Load unpacked** button
+4. navigate to extension\src and click on select folder
+
+
+ 
+
+
+
+
