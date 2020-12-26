@@ -35,9 +35,9 @@ You can read all the saved notes/highlights from the browser
 3. click on **Load unpacked** button
 4. navigate to extension\src and click on select folder
 
-This will run the web service at localhost (127.0.0.1:5000) extension will connect to same.
-Go to any webpage , highlight some text and click on button which appears nect to cursor.
-To see the saved text, go to 127.0.0.1:5000
+This will run the web service at localhost (127.0.0.1:5000) extension will connect to same.  
+Go to any webpage , highlight some text and click on button which appears nect to cursor.  
+To see the saved text, go to 127.0.0.1:5000  
 
 
  
