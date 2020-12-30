@@ -4,6 +4,7 @@ import json
 import flask
 from flask import request, render_template
 from models import Note
+from datetime import datetime
 from database import db_session
 
 
@@ -31,13 +32,31 @@ def notes():
         _save_note(data)
     return {'status': 'success'}               
 
+def _note_from_request(webrequest):
+    data = webrequest.data.decode('UTF-8')
+    data = json.loads(data)
+    return data
+
 def _save_note(data):
     note = Note(user_id=data.get('user_id'), text=data.get(
                 'text'), source=data.get('source'))
     db_session.add(note)
     db_session.commit()
 
-
+@app.route('/note/<note_id>', methods=['PUT'])
+def update(note_id):
+    """
+    updates a note
+    """
+    note = Note.query.filter(Note.id == note_id).first()   
+    if not note:
+        flask.abort(404)
+    req_note = _note_from_request(request)
+    note.tags = req_note.get('tags', '')
+    note.comments = req_note.get('comments', '')
+    note.modified_on = datetime.utcnow()
+    db_session.commit()
+    return {"note":note.serialize()}
 
 @app.route('/note/<note_id>', methods=['GET'])
 def get(note_id):
