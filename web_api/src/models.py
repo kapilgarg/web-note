@@ -1,8 +1,8 @@
 """
-all models 
+all models
 """
 import datetime
-from sqlalchemy import Column, Integer, String
+from sqlalchemy import Column, Integer, String, Boolean
 from database import Base
 
 
@@ -18,6 +18,7 @@ class Note(Base):
     source = Column(String(200), nullable=False)
     tags = Column(String(500), default='')
     comments = Column(String(500), default='')
+    deleted = Column(Boolean, nullable=False, default=False)
     created_on = Column(String(20), default=datetime.datetime.utcnow())
     modified_on = Column(String(20), default=datetime.datetime.utcnow())
 
