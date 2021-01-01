@@ -17,58 +17,59 @@ function getSelected() {
 
 $(document).ready(function () {
     console.debug('loading...');
-    
+
     var btnSave = null;
-    $('body').mouseup(function(e){
+    $('body').mouseup(function (e) {
         var selection = $.trim(getSelected());
-        if(!btnSave && selection!=''){
+        if (!btnSave && selection != '') {
             btnSave = $('<button>')
-            .attr({
-                type : 'button',
-                id : 'btnsave'
-            })
-            .html('+')
-            .css({
-                'color' : 'red'
-            }).hide();
+                .attr({
+                    type: 'button',
+                    id: 'btnsave'
+                })
+                .html('+')
+                .css({
+                    'color': 'red'
+                }).hide();
             $(document.body).append(btnSave);
 
-            $('#btnsave').click(function  save(event) {
+            $('#btnsave').click(function save(event) {
                 event.preventDefault();
                 var txt = $.trim(getSelected());
-                
+
                 var request = new XMLHttpRequest();
-                request.open("POST", URL+"notes");
+                request.open("POST", URL + "notes");
                 request.setRequestHeader("Content-Type", "text/plain");
                 request.overrideMimeType("text/plain");
-                request.onload = function()
-                {
+                request.onload = function () {
                     console.log("Response received: " + request.responseText);
                 };
-                try{
-                    request.send(JSON.stringify({"user_id":"1","text":txt,"source":window.location.href}));
+                try {
+                    request.send(JSON.stringify({ "user_id": "1", "text": txt, "source": window.location.href }));
                 }
-                catch(err){
+                catch (err) {
                     console.log(err);
                 }
-                document.getElementById("btnsave").style.display="none";
+                document.getElementById("btnsave").style.display = "none";
             });
         }
 
-      
 
-        if(selection !=''){
+
+        if (selection != '') {
             btnSave.css({
-                top : e.pageY-0,
-                left : e.pageX -3,
-                position:'absolute'
+                top: e.pageY - 0,
+                left: e.pageX - 3,
+                position: 'absolute'
             })
-            .fadeIn();
+                .fadeIn();
         }
-        else{
-            document.getElementById("btnsave").style.display="none";
+        else {
+            if (document.getElementById("btnsave")) {
+                document.getElementById("btnsave").style.display = "none";
+            }
         }
     });
-    
+
 });
 

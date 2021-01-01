@@ -1,12 +1,31 @@
 {% extends "base.html" %}
 {% block content %}
-<div>
-    {% for note in notes %}
 
-    <p style="border-bottom:1px;border-left: 0pc;border-right: 0pc;border-top: 0pc; border-style:solid; border-color:#FF0000; padding: 0.4em; ">
-        {{note.text}}
-    </p>
-    
+<div>
+    {% for note in notes %}  
+
+    <div class="container">
+        <div class="my-3 p-3 bg-white rounded box-shadow">
+            <div class="media text-gray-dark pt-3">
+                <p class="media-body pb-3 mb-0 small lh-125 border-bottom border-gray ls-002 ls-135">
+                    <strong class="d-block text-gray-dark">
+                        <!-- <a href={{note.source}} target="_blank" style="margin-bottom: 1em;">
+                            @{{note.source.rpartition("//")[-1]}}
+                        </a>                     -->
+                    </strong>
+
+                    {{note.text}}
+
+                </p>
+            </div>
+            <div class="btn-group" role="group" aria-label="Basic example">
+                <a href="#" title="share with twitter"><i class="fab fa-twitter" style="margin-right: 1em;" data-target="#exampleModalCenter"></i></a>
+                <a href="#"><i class="fas fa-tags" style="margin-right: 1em;"></i></a>
+                <a href="#" title="delete"><i class="fas fa-trash" style="margin-right: 1em;"></i></a>
+            </div>
+
+        </div>
+    </div>
     {% endfor %}
 </div>
 {% endblock %}
