@@ -10,6 +10,9 @@ from database import db_session
 
 app = flask.Flask(__name__)
 app.config["DEBUG"] = True
+import os
+SECRET_KEY = os.urandom(32)
+app.config['SECRET_KEY'] = SECRET_KEY
 
 
 @app.route('/', methods=['GET'])
@@ -17,7 +20,8 @@ def home():
     """
     Home
     """
-    all_notes = [note.serialize() for note in  Note.query.filter(Note.deleted == False)]
+    all_notes = [note.serialize()
+                 for note in Note.query.filter(Note.deleted == False)]
     return render_template('index.html', notes=all_notes)
 
 
@@ -32,16 +36,19 @@ def notes():
         _save_note(data)
     return {'status': 'success'}
 
+
 def _note_from_request(webrequest):
     data = webrequest.data.decode('UTF-8')
     data = json.loads(data)
     return data
+
 
 def _save_note(data):
     note = Note(user_id=data.get('user_id'), text=data.get(
                 'text'), source=data.get('source'))
     db_session.add(note)
     db_session.commit()
+
 
 @app.route('/note/<note_id>', methods=['PUT'])
 def update(note_id):
@@ -58,6 +65,7 @@ def update(note_id):
     db_session.commit()
     return dict(status='success', data=note.serialize())
 
+
 @app.route('/note/<note_id>', methods=['DELETE'])
 def delete(note_id):
     """
@@ -71,6 +79,7 @@ def delete(note_id):
     db_session.commit()
     return dict(status='success', data=note.serialize())
 
+
 @app.route('/note/<note_id>', methods=['GET'])
 def get(note_id):
     """
@@ -83,6 +92,24 @@ def get(note_id):
         flask.abort(404)
     return dict(status='success', data=note.serialize())
 
+@app.route('/search')
+def search():
+    """
+    search notes
+    """
+    text, tags = request.args.get('text'), request.args.get('tags')
+    query = db_session.query(Note)
+
+    if text:
+        search_text = "%{}%".format(text)
+        query = query.filter(Note.text.like(search_text))
+
+    if tags:
+        search_tags = tags.strip().split(',')
+        query = query.filter(Note.tags.in_(search_tags))
+
+    result = query.all()
+    return render_template('index.html', notes=result)
 
 @app.errorhandler(404)
 def page_not_found(error):

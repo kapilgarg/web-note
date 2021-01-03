@@ -18,16 +18,25 @@
 </head>
 
 <body>
-    <nav class="navbar navbar-custom navbar-expand-md fixed-top">
-        <a class="navbar-brand" href="#"></a>
-        <img alt="zipnote" src="\static\images\file-alt-solid.svg" width="20px">
-
-        <div class="navbar-collapse offcanvas-collapse" id="navbarsExampleDefault">
-            <ul class="navbar-nav mr-auto">
-                <li class="nav-item active">
-                    <a class="nav-link" href="#">Home <span class="sr-only">(current)</span></a>
-                </li>
-            </ul>
+    <nav class="navbar fixed-top navbar-expand-lg navbar-dark bg-dark py-0 top-nav">
+        <div class="container">
+            <button class="navbar-toggler collapsed" type="button" data-toggle="collapse" data-target="#navbarCollapse"
+                aria-controls="navbarCollapse" aria-expanded="false" aria-label="Toggle navigation">
+                <i class="fas fa-bars"></i>
+            </button>
+            <a class="navbar-brand mx-auto" href="/">Web-Note
+                <!-- <img alt="Matt Button" src='https://www.mattbutton.com/images/navbar-brand.png' width=169 height=23 /> -->
+            </a>
+            <div class="navbar-collapse collapse" id="navbarCollapse" style="float: right;">
+                <div class="search-lf">
+                <form class="form-inline" action="/search">
+                   
+                    <input name="text" class="mr-sm-2" type="search" placeholder="search"/>
+                    <button class="btn btn-primary btn-sm" type="submit">Search</button>   
+                </form>
+            </div>              
+            </div>
+    
         </div>
     </nav>
     {% block content %}

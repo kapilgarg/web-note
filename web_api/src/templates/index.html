@@ -1,13 +1,32 @@
 {% extends "base.html" %}
 {% block content %}
 
+<!-- Modal -->
+<div id="myModal" class="modal" role="dialog">
+  <div class="modal-dialog">
+    <!-- Modal content-->
+    <div class="modal-content">
+      <div class="modal-header">
+        <h4 class="modal-title">Tags</h4>
+      </div>
+      <div class="modal-body">
+        <p>Some text in the modal.</p>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-default" data-dismiss="modal">Save</button>
+      </div>
+    </div>
+
+  </div>
+</div>
+
 <div>
     {% for note in notes %}  
 
-    <div class="container">
-        <div class="my-3 p-3 bg-white rounded box-shadow">
-            <div class="media text-gray-dark pt-3">
-                <p class="media-body pb-3 mb-0 small lh-125 border-bottom border-gray ls-002 ls-135">
+    <div class="container" id={{note.id}}>
+        <div class="my-2 p-2 bg-white rounded box-shadow">
+            <div class="media text-gray-dark">
+                <p class="media-body pb-2 mb-0 small lh-125 border-bottom border-gray ls-002 lh-140">
                     <strong class="d-block text-gray-dark">
                         <!-- <a href={{note.source}} target="_blank" style="margin-bottom: 1em;">
                             @{{note.source.rpartition("//")[-1]}}
@@ -20,8 +39,8 @@
             </div>
             <div class="btn-group" role="group" aria-label="Basic example">
                 <a href="#" title="share with twitter"><i class="fab fa-twitter" style="margin-right: 1em;" data-target="#exampleModalCenter"></i></a>
-                <a href="#"><i class="fas fa-tags" style="margin-right: 1em;"></i></a>
-                <a href="#" title="delete"><i class="fas fa-trash" style="margin-right: 1em;"></i></a>
+                <a onclick="toggleModal()"><i class="fas fa-tags" style="margin-right: 1em;"></i></a>
+                <a title="delete" onclick=deleteNote('{{note.id}}')><i class="fas fa-trash" style="margin-right: 1em;"></i></a>
             </div>
 
         </div>
