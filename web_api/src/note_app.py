@@ -108,6 +108,8 @@ def search():
         search_tags = tags.strip().split(',')
         query = query.filter(Note.tags.in_(search_tags))
 
+    query = query.filter(Note.deleted == False)
+
     result = query.all()
     return render_template('index.html', notes=result)
 

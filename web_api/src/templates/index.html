@@ -23,10 +23,10 @@
 <div>
     {% for note in notes %}  
 
-    <div class="container" id={{note.id}}>
+    <div class="container border-bottom" id={{note.id}}>
         <div class="my-2 p-2 bg-white rounded box-shadow">
             <div class="media text-gray-dark">
-                <p class="media-body pb-2 mb-0 small lh-125 border-bottom border-gray ls-002 lh-140">
+                <p class="media-body pb-2 mb-0 small lh-125 ls-002 lh-140">
                     <strong class="d-block text-gray-dark">
                         <!-- <a href={{note.source}} target="_blank" style="margin-bottom: 1em;">
                             @{{note.source.rpartition("//")[-1]}}
