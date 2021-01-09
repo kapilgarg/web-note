@@ -4,18 +4,28 @@ import json
 from datetime import datetime
 import flask
 from flask import request, render_template
+from flask_limiter import Limiter
+from flask_limiter.util import get_remote_address
+
 from models import Note
 from database import db_session
 
 
 app = flask.Flask(__name__)
 app.config["DEBUG"] = True
+limiter = Limiter(
+    app,
+    key_func=get_remote_address,
+    default_limits=["200 per day", "50 per hour"]
+)
+
 import os
 SECRET_KEY = os.urandom(32)
 app.config['SECRET_KEY'] = SECRET_KEY
 
 
 @app.route('/', methods=['GET'])
+@limiter.limit("1/second", override_defaults=False)
 def home():
     """
     Home
@@ -26,6 +36,7 @@ def home():
 
 
 @app.route('/notes', methods=['POST'])
+@limiter.limit("1/second", override_defaults=False)
 def notes():
     """
     handler for /notes
@@ -51,6 +62,7 @@ def _save_note(data):
 
 
 @app.route('/note/<note_id>', methods=['PUT'])
+@limiter.limit("1/second", override_defaults=False)
 def update(note_id):
     """
     updates a note
@@ -67,6 +79,7 @@ def update(note_id):
 
 
 @app.route('/note/<note_id>', methods=['DELETE'])
+@limiter.limit("1/second", override_defaults=False)
 def delete(note_id):
     """
     deletes a note
@@ -81,6 +94,7 @@ def delete(note_id):
 
 
 @app.route('/note/<note_id>', methods=['GET'])
+@limiter.limit("1/second", override_defaults=False)
 def get(note_id):
     """
     handler for /note/<note_id>
@@ -93,6 +107,7 @@ def get(note_id):
     return dict(status='success', data=note.serialize())
 
 @app.route('/search')
+@limiter.limit("1/second", override_defaults=False)
 def search():
     """
     search notes
