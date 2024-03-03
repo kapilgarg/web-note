@@ -1,4 +1,4 @@
-# web-note
+# web-note <img src="/images/webnote-2.JPG" width="30px">  
 **web-note** is a browser extension to save the highlighted text (to db) and access your saved notes using a browser. It has two components
 1. browser extension which tracks the text that you highlight on a web page
 2. Web service which saves the text and also returns the rendered html page with saved text. 
