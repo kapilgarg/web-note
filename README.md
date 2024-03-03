@@ -1,9 +1,9 @@
 # web-note
-web-note is a browser extension to save the highlighted text (to cloud) and access your saved notes using a browser. It has two components
+**web-note** is a browser extension to save the highlighted text (to db) and access your saved notes using a browser. It has two components
 1. browser extension which tracks the text that you highlight on a web page
 2. Web service which saves the text and also returns the rendered html page with saved text. 
 
-Once you highlight a text on a web page, it shows a button at the end of the text. Once you click it, it saves the selected text to a databse.  
+Once you highlight a text on a web page, it shows a button at the end of the text. On clicking it, it saves the selected text to a database.  
 
 <img src="/images/hl1.JPG" width="100%">  
 
