@@ -13,11 +13,7 @@ from database import db_session
 
 app = flask.Flask(__name__)
 app.config["DEBUG"] = True
-limiter = Limiter(
-    app,
-    key_func=get_remote_address,
-    default_limits=["200 per day", "50 per hour"]
-)
+limiter = Limiter(get_remote_address, app=app, default_limits=["200 per day", "50 per hour"])
 
 import os
 SECRET_KEY = os.urandom(32)

@@ -1,6 +1,27 @@
 {% extends "base.html" %}
 {% block content %}
 
+<script type="text/javascript"> 
+function foo(id){
+  // var text ="<span style='background-color:red'>id is {id}</span>"
+  // $("#modal_body").html(text);
+
+  toggleModal()
+   
+}
+function saveTag(){
+  tags = document.getElementById("tags").value;
+
+}
+
+// function addTag(id){
+//   var text ="<span style='background-color:red'>id is {id}</span>"
+//   $("#modal_body").html(text);
+//   toggleModal()
+   
+// }
+  
+</script> 
 <!-- Modal -->
 <div id="myModal" class="modal" role="dialog">
   <div class="modal-dialog">
@@ -10,10 +31,12 @@
         <h4 class="modal-title">Tags</h4>
       </div>
       <div class="modal-body">
-        <p>Some text in the modal.</p>
+        <input type="text" name="tags" id="tags"/>
+        <!-- <p id="modal_body"></p>  -->
       </div>
       <div class="modal-footer">
-        <button type="button" class="btn btn-default" data-dismiss="modal">Save</button>
+        <button type="button" class="btn btn-default" data-dismiss="modal">Cancel</button>
+        <button type="button" class="btn btn-default" onclick="saveTag()">Save</button>
       </div>
     </div>
 
@@ -39,8 +62,9 @@
             </div>
             <div class="btn-group" role="group" aria-label="Basic example">
                 <a href="#" title="share with twitter"><i class="fab fa-twitter" style="margin-right: 1em;" data-target="#exampleModalCenter"></i></a>
-                <a onclick="toggleModal()"><i class="fas fa-tags" style="margin-right: 1em;"></i></a>
+                <a onclick="foo({{note.id}})"><i class="fas fa-tags" style="margin-right: 1em;"></i></a>
                 <a title="delete" onclick=deleteNote('{{note.id}}')><i class="fas fa-trash" style="margin-right: 1em;"></i></a>
+                <a href = {{note.source}} target="_blank"><i class="fa fa-external-link-square" style="margin-right: 1em;"></i></a>
             </div>
 
         </div>
