@@ -1,29 +1,30 @@
 {
-    "manifest_version": 2,
-    "name": "web-note",
-    "version": "1.0",
-  
-    "description": "saves your highlites",
-	
-	"background": {
-      "scripts": ["background.js"]
-    },
-	
-    "permissions": [
-      "http://*/*",
-      "https://*/*" ,
-      "webRequest", 
-	  "contextMenus",
-	  "activeTab",
-	  "tabs",
-	  "menus"	  
-	],  
-    "content_scripts": [
-      {
-        "matches": ["<all_urls>"],
-        "js": ["jquery-3.5.1.min.js","app.js","config.js"]
-      }
-    ]
-	
-  
+  "manifest_version": 3,
+  "name": "web-note",
+  "version": "1.0",
+  "description": "Save and manage your text highlights from any webpage",
+  "permissions": [
+    "storage",
+    "contextMenus"
+  ],
+  "host_permissions": [
+    "<all_urls>"
+  ],
+  "background": {
+    "service_worker": "background.js"
+  },
+  "content_scripts": [
+    {
+      "matches": [
+        "<all_urls>"
+      ],
+      "js": [
+        "config.js",
+        "app.js"
+      ]
+    }
+  ],
+  "action": {
+    "default_title": "Web Note - Save highlights"
   }
+}
