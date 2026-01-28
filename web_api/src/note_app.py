@@ -2,14 +2,19 @@
 Web Note API - Flask application for managing text highlights
 """
 import json
+import os
 from datetime import datetime
 from functools import wraps
 
 import flask
-from flask import request, render_template, jsonify
+from flask import request, jsonify
 from flask_limiter import Limiter
 from flask_limiter.util import get_remote_address
 from sqlalchemy import and_, desc
+
+# Load environment variables before importing config
+if not os.getenv('FLASK_ENV'):
+    os.environ['FLASK_ENV'] = 'development'
 
 from models import Note
 from database import db_session, init_db, close_db_session
@@ -79,7 +84,7 @@ def success_response(data=None, message='success', status_code=200):
 @limiter.limit("5/second")
 def home():
     """
-    Home page - displays all non-deleted notes
+    Home page - returns all non-deleted notes as JSON
     """
     try:
         page = request.args.get('page', 1, type=int)
@@ -93,13 +98,13 @@ def home():
         
         total = db_session.query(Note).filter(Note.deleted == False).count()
         
-        return render_template(
-            'index.html',
-            notes=[note.serialize() for note in notes],
-            total=total,
-            page=page,
-            items_per_page=current_config.ITEMS_PER_PAGE
-        )
+        return success_response({
+            'notes': [note.serialize() for note in notes],
+            'total': total,
+            'page': page,
+            'items_per_page': current_config.ITEMS_PER_PAGE,
+            'total_pages': (total + current_config.ITEMS_PER_PAGE - 1) // current_config.ITEMS_PER_PAGE
+        }, "Notes retrieved successfully")
     except Exception as e:
         app_logger.error(f"Error in home route: {str(e)}")
         return error_response("Internal server error", 500)
@@ -241,8 +246,8 @@ def search_notes():
         query = db_session.query(Note).filter(Note.deleted == False)
         
         if search_text:
-            search_text = f"%{search_text}%"
-            query = query.filter(Note.text.ilike(search_text))
+            search_text_pattern = f"%{search_text}%"
+            query = query.filter(Note.text.ilike(search_text_pattern))
         
         if search_tags:
             tag_list = [tag.strip() for tag in search_tags.split(',')]
@@ -255,15 +260,15 @@ def search_notes():
         
         app_logger.info(f"Search performed: text='{search_text}', tags='{search_tags}', results={len(results)}")
         
-        return render_template(
-            'index.html',
-            notes=[note.serialize() for note in results],
-            total=total,
-            page=page,
-            items_per_page=current_config.ITEMS_PER_PAGE,
-            search_text=search_text,
-            search_tags=search_tags
-        )
+        return success_response({
+            'notes': [note.serialize() for note in results],
+            'total': total,
+            'page': page,
+            'items_per_page': current_config.ITEMS_PER_PAGE,
+            'total_pages': (total + current_config.ITEMS_PER_PAGE - 1) // current_config.ITEMS_PER_PAGE,
+            'search_text': search_text,
+            'search_tags': search_tags
+        }, "Search completed successfully")
         
     except Exception as e:
         app_logger.error(f"Error in search: {str(e)}")

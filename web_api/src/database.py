@@ -4,24 +4,15 @@ Database configuration and session management
 from sqlalchemy import create_engine
 from sqlalchemy.orm import scoped_session, sessionmaker
 from sqlalchemy.ext.declarative import declarative_base
-from sqlalchemy.pool import StaticPool
 from config import current_config
 from logger import app_logger
 
 DATABASE_URL = f"sqlite:///{current_config.DATABASE}"
 
-# Use StaticPool for SQLite in-memory databases
-pool_kwargs = {}
-if ':memory:' in DATABASE_URL:
-    pool_kwargs = {
-        'connect_args': {'check_same_thread': False},
-        'poolclass': StaticPool
-    }
-
+# Create engine with SQLite specific settings
 engine = create_engine(
     DATABASE_URL,
-    convert_unicode=True,
-    **pool_kwargs
+    connect_args={'check_same_thread': False}
 )
 
 db_session = scoped_session(sessionmaker(

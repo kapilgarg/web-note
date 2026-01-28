@@ -1,4 +1,25 @@
-﻿// Get selected text - supports all browsers
+﻿// Web Note Extension - Compatible with Chrome and Firefox
+console.log('[Web Note] app.js loading...');
+
+// Ensure chrome namespace exists (for Firefox compatibility)
+if (typeof chrome === 'undefined') {
+    var chrome = browser;
+    console.log('[Web Note] Using Firefox browser namespace');
+}
+
+// Ensure CONFIG is defined (fallback if config.js didn't load)
+if (typeof CONFIG === 'undefined') {
+    console.warn('[Web Note] CONFIG not found, using fallback');
+    window.CONFIG = {
+        apiUrl: "http://127.0.0.1:5000/",
+        environment: 'development',
+        timeout: 10000
+    };
+} else {
+    console.log('[Web Note] CONFIG loaded from config.js:', CONFIG.apiUrl);
+}
+
+// Get selected text - supports all browsers
 function getSelectedText() {
     return window.getSelection().toString().trim();
 }
@@ -29,35 +50,33 @@ function showNotification(message, type = 'success') {
     }, 3000);
 }
 
-// Save highlight via API
+// Save highlight via API (send to background script to bypass CSP)
 async function saveHighlight(text, source) {
     try {
         // Get user ID from storage (default to 1 if not set)
         const data = await chrome.storage.local.get('userId');
         const userId = data.userId || '1';
         
-        const response = await fetch(CONFIG.apiUrl + 'notes', {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json',
-            },
-            body: JSON.stringify({
-                user_id: userId,
-                text: text,
-                source: source
-            })
+        // Send message to background script to make the API request
+        chrome.runtime.sendMessage({
+            action: 'saveHighlight',
+            text: text,
+            source: source,
+            userId: userId
+        }, (response) => {
+            if (response && response.success) {
+                showNotification('✓ Highlight saved successfully', 'success');
+                console.log('[Web Note] Highlight saved:', response.data);
+            } else {
+                const errorMsg = response ? response.error : 'Unknown error';
+                console.error('[Web Note] Error saving highlight:', errorMsg);
+                showNotification('✗ Failed to save highlight', 'error');
+            }
         });
         
-        if (!response.ok) {
-            throw new Error(`HTTP error! status: ${response.status}`);
-        }
-        
-        const result = await response.json();
-        showNotification('✓ Highlight saved successfully', 'success');
-        console.log('Highlight saved:', result);
         return true;
     } catch (error) {
-        console.error('Error saving highlight:', error);
+        console.error('[Web Note] Error sending save request:', error);
         showNotification('✗ Failed to save highlight', 'error');
         return false;
     }
@@ -166,4 +185,6 @@ style.textContent = `
 `;
 document.head.appendChild(style);
 
-console.log('Web Note extension loaded on', window.location.href);
+console.log('[Web Note] ✓ Extension fully loaded on', window.location.href);
+console.log('[Web Note] ✓ API URL:', CONFIG.apiUrl);
+console.log('[Web Note] ✓ Ready to save highlights');

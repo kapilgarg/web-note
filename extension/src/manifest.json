@@ -11,7 +11,8 @@
     "<all_urls>"
   ],
   "background": {
-    "service_worker": "background.js"
+    "service_worker": "background.js",
+    "scripts": ["background.js"]
   },
   "content_scripts": [
     {
@@ -26,5 +27,10 @@
   ],
   "action": {
     "default_title": "Web Note - Save highlights"
+  },
+  "browser_specific_settings": {
+    "gecko": {
+      "id": "web-note@example.com"
+    }
   }
 }

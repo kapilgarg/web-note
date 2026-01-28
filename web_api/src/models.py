@@ -20,12 +20,11 @@ class Note(Base):
     comments = Column(String(500), default='')
     deleted = Column(Boolean, nullable=False, default=False, index=True)
     created_on = Column(DateTime, default=datetime.datetime.utcnow, nullable=False)
-    modified_on = Column(DateTime, default=datetime.datetime.utcnow, nullable=False, onupdate=datetime.datetime.utcnow)
+    modified_on = Column(DateTime, default=datetime.datetime.utcnow, nullable=False)
     
-    # Composite index for efficient filtering
+    # Composite indexes for efficient filtering
     __table_args__ = (
         Index('ix_user_deleted', 'user_id', 'deleted'),
-        Index('ix_text_search', 'text'),
     )
 
     def __init__(self, user_id, text, source):
