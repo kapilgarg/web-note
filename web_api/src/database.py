@@ -1,13 +1,35 @@
+"""
+Database configuration and session management
+"""
 from sqlalchemy import create_engine
 from sqlalchemy.orm import scoped_session, sessionmaker
 from sqlalchemy.ext.declarative import declarative_base
+from sqlalchemy.pool import StaticPool
+from config import current_config
+from logger import app_logger
 
-DATABASE = "web-note.db"
+DATABASE_URL = f"sqlite:///{current_config.DATABASE}"
 
-engine = create_engine('sqlite:///'+DATABASE, convert_unicode=True)
-db_session = scoped_session(sessionmaker(autocommit=False,
-                                         autoflush=False,
-                                         bind=engine))
+# Use StaticPool for SQLite in-memory databases
+pool_kwargs = {}
+if ':memory:' in DATABASE_URL:
+    pool_kwargs = {
+        'connect_args': {'check_same_thread': False},
+        'poolclass': StaticPool
+    }
+
+engine = create_engine(
+    DATABASE_URL,
+    convert_unicode=True,
+    **pool_kwargs
+)
+
+db_session = scoped_session(sessionmaker(
+    autocommit=False,
+    autoflush=False,
+    bind=engine,
+    expire_on_commit=False
+))
 
 Base = declarative_base()
 Base.query = db_session.query_property()
@@ -15,10 +37,20 @@ Base.query = db_session.query_property()
 
 def init_db():
     """
-    initialize the db
+    Initialize the database and create tables
     """
-    # import all modules here that might define models so that
-    # they will be registered properly on the metadata.  Otherwise
-    # you will have to import them first before calling init_db()
-    import models
-    Base.metadata.create_all(bind=engine)
+    try:
+        import models  # noqa: F401 - Import to register models
+        Base.metadata.create_all(bind=engine)
+        app_logger.info("Database initialized successfully")
+    except Exception as e:
+        app_logger.error(f"Error initializing database: {str(e)}")
+        raise
+
+
+def close_db_session():
+    """
+    Close database session
+    """
+    db_session.remove()
+
